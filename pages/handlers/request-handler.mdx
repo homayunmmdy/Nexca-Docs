@@ -1,0 +1,89 @@
+# RequestHandler 📄
+
+The **RequestHandler** is a foundational component of the Nexca project, playing a crucial role in managing **CRUD** (Create, Read, Update, Delete) operations. It encapsulates reusable logic for handling requests and responses efficiently, ensuring our backend operations are robust and maintainable. You can find the implementation [here](https://github.com/nexca/repository) in the Nexca repository.
+
+## What Is a Request Handler? 🤔
+
+A **request handler** is a utility that centralizes the logic for processing client requests. It acts as a bridge between the client and the database, ensuring that data is correctly fetched, created, updated, or deleted. In this context, the `RequestHandler` class in Nexca handles interactions with **MongoDB models** while optionally supporting **caching** during development.
+
+This class simplifies error handling and provides consistent responses, which is essential for creating scalable and reliable APIs.
+
+
+## Why Is It Important? 🌟
+
+The `RequestHandler`:
+
+- **Streamlines CRUD operations**: By consolidating logic into a single reusable class, it avoids redundancy across endpoints. 🔄
+- **Handles caching**: During development, it can serve data directly from a local cache, reducing database calls and speeding up the development process. ⚡
+- **Manages errors gracefully**: It includes a consistent structure for error responses, making debugging and client-side error handling easier. 🛠️
+- **Supports scalability**: Its modular design makes it easy to extend functionality as the application grows. 📈
+
+## How the RequestHandler Works ⚙️
+
+The `RequestHandler` class accepts two parameters during initialization:
+
+1. A **MongoDB Model** (via Mongoose) for database operations.
+2. A **Cache array**, which can store mock data for development purposes.
+
+It provides the following methods:
+
+### 1. `GetAll()` 📂
+Retrieves all records from the database or the cache, depending on the environment:
+- In **development mode**, it fetches data from the Cache.
+- In **production mode**, it queries the database.
+
+### 2. `Post(req: Request, successMessage: string)` ➕
+Creates a new record in the database using the request body. It returns a success message or an error response.
+
+### 3. `Get(id: string)` 🔍
+Fetches a specific record by its ID:
+- In **development mode**, it searches in the cache.
+- In **production mode**, it queries the database.
+
+### 4. `PUT(id: string, req: Request, successMessage: string)` ✏️
+Updates an existing record identified by its ID. The request body contains the updated data.
+
+### 5. `DELETE(id: string, successMessage: string)` 🗑️
+Deletes a record by its ID and returns a success message if the deletion was successful.
+
+### 6. `ErrorResponse(err: any)` ❌
+A utility method to send a standardized error response when operations fail.
+
+
+
+## Example Usage 🛠️
+
+Here’s how you might use the `RequestHandler` in your API routes:
+
+```javascript
+import RequestHandler from "@/util/handler/RequestHandler";
+import { MyModel } from "@/models/MyModel";
+
+// Initialize the handler
+const handler = new RequestHandler(MyModel, []);
+
+// Example API route
+export async function GET() {
+  return handler.GetAll();
+}
+
+export async function POST(req: Request) {
+  return handler.Post(req, "Record created successfully");
+}
+```
+
+## Key Features 🔑
+
+- **Environment-Specific Behavior** 🌍  
+  The class adapts based on the environment (dev vs. production), improving performance during development.
+
+- **Error Handling** 🚨  
+  Errors are logged and returned in a structured JSON format, maintaining consistency across the application.
+
+- **Flexibility** 🧩  
+  Since the `RequestHandler` is a generic class (`<T>`), it can be used with any Mongoose model, making it highly reusable.
+
+
+## Conclusion 🎯
+
+The `RequestHandler` is one of the most important utilities in Nexca, offering a clean, consistent, and scalable way to manage CRUD operations. With its robust error handling and development-friendly features, it sets a strong foundation for building efficient APIs. 🚀
