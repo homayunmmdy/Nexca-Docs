@@ -1,0 +1,165 @@
+# All the Ways to Render Pages in Next.js (With Simple Examples)
+
+Next.js offers multiple ways to render pages, each with different use cases. Let’s go through them one by one with simple examples.
+
+## 1. Static Site Generation (SSG)
+
+**Best for:** Pages that don’t change often (e.g., blog posts, documentation).
+
+SSG generates the page at **build time**, meaning the page is pre-built as an HTML file and served quickly.
+
+### Example:
+
+```jsx
+export async function getStaticProps() {
+  const data = await fetch('https://api.example.com/data').then(res => res.json());
+
+  return {
+    props: { data },
+  };
+}
+
+export default function Page({ data }) {
+  return <div>Data: {data.message}</div>;
+}
+```
+
+**How it works:**
+- `getStaticProps` runs at build time.
+- The page is pre-rendered and served as static HTML.
+
+---
+
+## 2. Incremental Static Regeneration (ISR)
+
+**Best for:** Updating static pages **without rebuilding** the whole site.
+
+ISR allows pages to be **updated after deployment** at a specified interval.
+
+### Example:
+
+```jsx
+export async function getStaticProps() {
+  const data = await fetch('https://api.example.com/data').then(res => res.json());
+
+  return {
+    props: { data },
+    revalidate: 10, // Regenerates the page every 10 seconds
+  };
+}
+
+export default function Page({ data }) {
+  return <div>Data: {data.message}</div>;
+}
+```
+
+**How it works:**
+- The page is **cached** and served as static HTML.
+- After 10 seconds, a new version is generated.
+
+---
+
+## 3. Server-Side Rendering (SSR)
+
+**Best for:** Pages that need fresh data **on every request** (e.g., dashboards).
+
+SSR generates the page **on every request** at runtime.
+
+### Example:
+
+```jsx
+export async function getServerSideProps() {
+  const data = await fetch('https://api.example.com/data').then(res => res.json());
+
+  return {
+    props: { data },
+  };
+}
+
+export default function Page({ data }) {
+  return <div>Data: {data.message}</div>;
+}
+```
+
+**How it works:**
+- `getServerSideProps` runs **on each request**.
+- The page is dynamically generated **before sending the response**.
+
+---
+
+## 4. Client-Side Rendering (CSR)
+
+**Best for:** Pages that need **fast loading** and fetch data **after the page loads**.
+
+CSR loads the page first and **fetches data in the browser**.
+
+### Example:
+
+```jsx
+import { useEffect, useState } from 'react';
+
+export default function Page() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('https://api.example.com/data')
+      .then(res => res.json())
+      .then(setData);
+  }, []);
+
+  return <div>Data: {data ? data.message : 'Loading...'}</div>;
+}
+```
+
+**How it works:**
+- The page loads **immediately**.
+- Data is fetched **after the initial render**.
+
+---
+
+## 5. Hybrid Rendering
+
+**Best for:** Combining multiple rendering methods in a single page.
+
+You can **mix SSR, SSG, ISR, and CSR** depending on the data source.
+
+### Example:
+
+```jsx
+import { useEffect, useState } from 'react';
+
+export async function getServerSideProps() {
+  const initialData = await fetch('https://api.example.com/data').then(res => res.json());
+
+  return { props: { initialData } };
+}
+
+export default function Page({ initialData }) {
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    fetch('https://api.example.com/data')
+      .then(res => res.json())
+      .then(setData);
+  }, []);
+
+  return <div>Data: {data.message}</div>;
+}
+```
+
+**How it works:**
+- `getServerSideProps` provides **initial data**.
+- `useEffect` fetches **updated data** after the page loads.
+
+---
+
+## Conclusion
+
+| Rendering Method | When to Use? | Example |
+|-----------------|-------------|---------|
+| **SSG** (Static) | Content rarely changes | Blog posts |
+| **ISR** (Static + Updates) | Content changes occasionally | News pages |
+| **SSR** (Dynamic) | Content changes on every request | Dashboards |
+| **CSR** (Client-side) | Fast initial load, data fetch after | User feeds |
+| **Hybrid** | Mix of methods | Personal dashboards |
+
