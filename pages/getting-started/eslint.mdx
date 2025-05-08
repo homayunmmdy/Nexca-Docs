@@ -1,0 +1,33 @@
+# ESLint in Nexca
+
+## What is ESLint?
+
+[ESLint](https://eslint.org/) is a widely used tool that helps developers write consistent and error-free JavaScript code. It analyzes your code for potential problems such as syntax issues, code style violations, and best practices. ESLint is particularly useful for teams working on the same codebase, as it enforces a shared coding standard.
+
+Using ESLint ensures:
+- Fewer bugs
+- Cleaner code
+- Improved team collaboration
+- A consistent development experience
+
+## How ESLint is used in Nexca
+
+In Nexca, ESLint plays a central role in maintaining code quality. We've defined a custom set of rules that align with our preferred coding style. These rules help catch common issues early, such as unused variables, inconsistent spacing, or missing semicolons.
+
+Here's a quick summary of what the ESLint configuration in Nexca enforces:
+- Always use `===` instead of `==`
+- Disallow unused or undeclared variables
+- Use `const` over `var` when possible
+- Keep lines under 80 characters
+- Prevent duplicate imports and trailing spaces
+
+This setup ensures that Nexca’s codebase remains clean, readable, and easy to maintain.
+
+## ESLint in CI
+
+To keep code quality consistent, Nexca integrates ESLint into its CI pipeline using GitHub Actions. Every time a pull request or push is made to the `main` branch, ESLint automatically runs to check for any issues. If the code doesn't meet the standards, the CI will fail and notify the developer.
+
+This workflow helps:
+- Prevent bad code from being merged
+- Catch mistakes before review
+- Maintain a high-quality codebase
